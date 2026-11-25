@@ -16,6 +16,7 @@ jobs:
 
       - name: Generate project
         run: xcodegen generate
+        working-directory: MOTION
 
       - name: Build app
         run: |
@@ -27,15 +28,17 @@ jobs:
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             build
+        working-directory: MOTION
 
       - name: Package IPA
         run: |
-          mkdir Payload
+          mkdir -p Payload
           cp -R build/Build/Products/Release-iphoneos/MOTION.app Payload/
           ditto -c -k --sequesterRsrc --keepParent Payload MOTION-unsigned.ipa
+        working-directory: MOTION
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: MOTION-unsigned-IPA
-          path: MOTION-unsigned.ipa
+          path: MOTION/MOTION-unsigned.ipa
